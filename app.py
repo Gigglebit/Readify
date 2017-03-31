@@ -23,22 +23,40 @@ def hello():
     return makeMyResponse()
 
 def fib(n):
+	a, b = 0, 1
 	if n == 0:
-		return 0
-	elif n == 1:
-		return 1
-	else:
-		if n > 0:
-			return fib(n-1)+fib(n-2)
-		if n < 0:
-			return fib(n+2)-fib(n+1)
+		return a
+	if n == 1:
+		return b
+	if n > 0:
+		for i in xrange(n):
+			a, b = b, a+b
+			if a >= 7540113804746346000 and i!= n-1:
+				return "error"
+	else: 
+		for i in xrange(n,0):
+			a, b = b-a, a
+			if a <= -7540113804746346000 and i!= -1:
+				return "error" 		
+	return a
+	# if n == 0:
+	# 	return 0
+	# elif n == 1:
+	# 	return 1
+	# else:
+	# 	if n > 0:
+	# 		return fib(n-1)+fib(n-2)
+	# 	if n < 0:
+	# 		return fib(n+2)-fib(n+1)
 
 @app.route("/api/fibonacci")  
 def fibonacci():
 	n = request.args.get('n')
 
-	if n.isdigit() or (n[0]=="-" and n[1::].isdigit()):
+	if ((n.isdigit() and int(n)<1024) or (n[0]=="-" and n[1::].isdigit() and int(n[1::]<1024))):
 		fib_num = fib(int(n))
+		if fib_num == "error":
+			return makeMyResponse(json.dumps({"message": "The request is invalid."}),400)
 		return makeMyResponse(str(fib_num),200)
 	else:
 		return makeMyResponse(json.dumps({"message": "The request is invalid."}),400)
@@ -49,7 +67,6 @@ def reverseWords():
 	sentence = request.args.get('sentence')
 	words = sentence.split(" ")
 	n_words = len(words)
-	reversed_words = ""
 	for i in xrange(n_words):
 		reversed_words+=words[i][::-1]
 		if i!= n_words:
@@ -80,4 +97,4 @@ def triangleType():
 	return makeMyResponse(result,200)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
