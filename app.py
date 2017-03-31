@@ -28,19 +28,23 @@ def fib(n):
 	elif n == 1:
 		return 1
 	else:
-		return fib(n-1)+fib(n-2)
+		if n > 0:
+			return fib(n-1)+fib(n-2)
+		if n < 0:
+			return fib(n+2)-fib(n+1)
 
-@app.route("/api/Fibonacci")  
+@app.route("/api/fibonacci")  
 def fibonacci():
 	n = request.args.get('n')
-	if n.isdigit() and int(n) >= 0:
+
+	if n.isdigit() or (n[0]=="-" and n[1::].isdigit()):
 		fib_num = fib(int(n))
 		return makeMyResponse(str(fib_num),200)
 	else:
 		return makeMyResponse(json.dumps({"message": "The request is invalid."}),400)
 	
 
-@app.route("/api/ReverseWords")
+@app.route("/api/reversewords")
 def reverseWords():
 	sentence = request.args.get('sentence')
 	words = sentence.split(" ")
@@ -52,11 +56,11 @@ def reverseWords():
 			reversed_words+=" "
 	return makeMyResponse(reversed_words,200)
 
-@app.route("/api/Token")
+@app.route("/api/token")
 def getToken():
 	return makeMyResponse("\"d41c19f7-b2a3-41be-8190-6531d2200b3f\"",200)
 
-@app.route("/api/TriangleType")
+@app.route("/api/triangletype")
 def triangleType():
 	a = request.args.get('a')
 	b = request.args.get('b')
@@ -76,4 +80,4 @@ def triangleType():
 	return makeMyResponse(result,200)
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
